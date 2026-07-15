@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Elektro Profi × 1337 · AI fejlesztési program</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=DM+Mono:wght@500&family=Fraunces:ital,wght@1,500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FBFAF4; --bg-pure:#FFFFFF; --bg-soft:#F3F2EB;
+    --card:#EAEBE4; --line:#DDDED7; --line-2:#C7C8C1;
+    --ink:#1A1A1A; --ink-2:#44403C; --text-2:#78716C; --text-3:#A8A29E;
+    --accent:#8B5CF6; --accent-soft:#E8DEFD; --accent-mist:#F0EDF8; --accent-tint:#E0D7FA; --accent-700:#6E2EE0;
+    --font-sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    --font-mono:'DM Mono','Consolas',ui-monospace,monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{height:100%;background:var(--bg);font-family:var(--font-sans);color:var(--ink);-webkit-font-smoothing:antialiased;overflow:hidden;}
+  .slide{position:fixed;inset:0;background:var(--bg);padding:5.5vh 5.5vw 8vh;display:none;flex-direction:column;}
+  .slide.active{display:flex;}
+
+  .shead{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:2.6vh;flex:none;}
+  .caps{font-family:var(--font-mono);font-weight:500;font-size:clamp(11px,0.95vw,17px);letter-spacing:.4em;text-transform:uppercase;color:var(--text-2);}
+  .shead img{height:clamp(16px,1.6vw,26px);width:auto;display:block;}
+
+  h1{font-size:clamp(44px,4.8vw,92px);font-weight:700;line-height:1.06;letter-spacing:-0.025em;}
+  h2{font-size:clamp(30px,3vw,58px);font-weight:700;line-height:1.1;letter-spacing:-0.02em;}
+  h1 em,h2 em{font-style:normal;color:var(--accent);}
+  .subtitle{font-size:clamp(15px,1.3vw,25px);line-height:1.5;color:var(--text-2);margin-top:1.8vh;max-width:82%;}
+
+  .cards{display:grid;gap:1.4vw;margin-top:3.6vh;flex:1;min-height:0;align-content:stretch;}
+  .cards.c3{grid-template-columns:repeat(3,1fr);}
+  .cards.c4{grid-template-columns:repeat(4,1fr);}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:2.6vh 1.7vw;display:flex;flex-direction:column;justify-content:center;}
+  .card.accented{background:var(--accent-soft);border-color:var(--accent);}
+  .mtag{font-family:var(--font-mono);font-size:clamp(10px,0.8vw,15px);font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--text-3);margin-bottom:1.6vh;}
+  .mtag.purple{color:var(--accent);}
+  .card .big{font-size:clamp(30px,2.7vw,52px);font-weight:700;letter-spacing:-1.5px;margin-bottom:1vh;}
+  .card h3{font-size:clamp(17px,1.45vw,28px);font-weight:700;letter-spacing:-0.01em;margin-bottom:1.2vh;}
+  .card p{font-size:clamp(13px,1vw,19px);line-height:1.55;color:var(--text-2);}
+
+  .pills{display:flex;gap:0.9vw;margin-top:3vh;flex-wrap:wrap;}
+  .pill{display:inline-flex;align-items:center;padding:1.2vh 1.4vw;border-radius:100px;background:var(--card);color:var(--ink-2);font-size:clamp(13px,1vw,19px);font-weight:600;}
+
+  .refs{margin-top:auto;padding-top:3vh;border-top:1px solid var(--line);flex:none;}
+  .refs .caps{font-size:clamp(10px,0.75vw,14px);margin-bottom:1.8vh;display:block;}
+  .refs .names{display:flex;gap:3vw;font-size:clamp(16px,1.35vw,26px);font-weight:600;color:var(--ink-2);flex-wrap:wrap;}
+
+  ul.points{margin-top:1vh;list-style:none;flex:1;display:flex;flex-direction:column;justify-content:center;}
+  ul.points li{font-size:clamp(14px,1.15vw,22px);line-height:1.5;color:var(--ink-2);padding:1.8vh 0 1.8vh 2vw;position:relative;border-bottom:1px solid var(--line);}
+  ul.points li:last-child{border-bottom:none;}
+  ul.points li::before{content:"";position:absolute;left:2px;top:calc(1.8vh + 0.55em);width:10px;height:10px;border-radius:3px;background:var(--accent);}
+  ul.points b{font-weight:700;color:var(--ink);}
+
+  .darkcard{margin-top:auto;background:var(--ink);color:var(--bg);border-radius:16px;padding:3vh 2vw;flex:none;}
+  .darkcard b{display:block;font-size:clamp(17px,1.35vw,26px);font-weight:700;margin-bottom:0.8vh;}
+  .darkcard span{font-size:clamp(13px,1vw,19px);line-height:1.55;color:rgba(255,255,255,.75);}
+
+  .split{display:grid;grid-template-columns:0.75fr 1.25fr;gap:3vw;flex:1;min-height:0;align-items:center;}
+  .split .left{display:flex;flex-direction:column;justify-content:center;min-height:0;height:100%;}
+  .split .left .subtitle{max-width:100%;flex:none;}
+  .split .diagram{display:flex;align-items:center;justify-content:center;min-height:0;height:100%;}
+  .split .diagram svg{max-height:100%;max-width:100%;width:100%;height:auto;}
+
+  table.plan{width:100%;border-collapse:collapse;margin-top:3vh;flex:1;}
+  table.plan th{font-family:var(--font-mono);font-size:clamp(10px,0.75vw,14px);letter-spacing:.18em;text-transform:uppercase;color:var(--text-3);text-align:left;padding:0 1vw 1.4vh;border-bottom:1px solid var(--line-2);font-weight:500;}
+  table.plan td{padding:1.75vh 1vw;border-bottom:1px solid var(--line);font-size:clamp(13px,1.05vw,20px);line-height:1.45;vertical-align:middle;}
+  table.plan tr:last-child td{border-bottom:none;}
+  table.plan .ph{font-weight:700;white-space:nowrap;}
+  table.plan .time{white-space:nowrap;color:var(--text-2);font-weight:600;}
+  table.plan .price{white-space:nowrap;font-weight:700;}
+  table.plan td.desc{color:var(--text-2);width:62%;}
+  .pbadge{display:inline-block;font-family:var(--font-mono);font-size:clamp(9px,0.68vw,13px);letter-spacing:.08em;text-transform:uppercase;color:var(--accent);background:var(--accent-soft);border-radius:100px;padding:0.5vh 0.8vw;margin-left:0.6vw;vertical-align:2px;}
+  .tablefoot{margin-top:2.2vh;font-size:clamp(12px,0.95vw,18px);color:var(--text-3);line-height:1.6;flex:none;}
+
+  .grid6{display:grid;grid-template-columns:repeat(3,1fr);gap:3vh 3vw;margin-top:4vh;flex:1;align-content:center;}
+  .g6{border-top:2px solid var(--accent);padding-top:2vh;}
+  .g6 .num{font-family:var(--font-mono);font-size:clamp(11px,0.85vw,16px);font-weight:500;color:var(--accent);letter-spacing:.18em;margin-bottom:1.2vh;}
+  .g6 h3{font-size:clamp(16px,1.35vw,26px);font-weight:700;margin-bottom:1vh;letter-spacing:-0.01em;}
+  .g6 p{font-size:clamp(13px,0.98vw,18.5px);line-height:1.55;color:var(--text-2);}
+
+  .twocol{display:grid;grid-template-columns:1fr 1fr;gap:1.7vw;margin-top:3.6vh;flex:1;min-height:0;}
+  .col-box{border:1px solid var(--line);border-radius:16px;padding:3vh 2vw;display:flex;flex-direction:column;justify-content:center;}
+  .col-box.yes{background:var(--accent-mist);border-color:var(--accent);}
+  .col-box.no{background:var(--card);}
+  .col-box h3{font-size:clamp(17px,1.45vw,28px);font-weight:700;margin-bottom:2vh;}
+  .col-box ul{list-style:none;}
+  .col-box li{font-size:clamp(13px,1.05vw,20px);line-height:1.5;color:var(--ink-2);padding:1.1vh 0 1.1vh 1.7vw;position:relative;}
+  .col-box li::before{content:"";position:absolute;left:0;top:calc(1.1vh + 0.5em);width:10px;height:10px;border-radius:50%;}
+  .col-box.yes li::before{background:var(--accent);}
+  .col-box.no li::before{background:var(--line-2);}
+
+  .team{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5vw;margin-top:3.6vh;flex:1;min-height:0;}
+  .member{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;min-height:0;}
+  .member img{width:100%;flex:1;min-height:0;object-fit:cover;display:block;filter:grayscale(100%);}
+  .member .info{padding:2vh 1.4vw 2.4vh;flex:none;}
+  .member h3{font-size:clamp(16px,1.3vw,25px);font-weight:700;margin-bottom:0.4vh;letter-spacing:-0.01em;}
+  .member .role{font-family:var(--font-mono);font-size:clamp(9px,0.73vw,14px);font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:1vh;}
+  .member p{font-size:clamp(11px,0.9vw,17px);line-height:1.5;color:var(--text-2);}
+
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5vw;margin-top:3.6vh;flex:1;min-height:0;}
+  .step{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:3vh 2vw;display:flex;flex-direction:column;justify-content:center;}
+  .step .n{font-family:var(--font-mono);font-size:clamp(24px,2vw,40px);font-weight:500;color:var(--accent);margin-bottom:1.8vh;}
+  .step h3{font-size:clamp(17px,1.4vw,27px);font-weight:700;margin-bottom:1.2vh;}
+  .step p{font-size:clamp(13px,1vw,19px);line-height:1.55;color:var(--text-2);}
+
+  .bottomnote{margin-top:auto;padding-top:2.4vh;font-size:clamp(13px,1vw,19px);line-height:1.6;color:var(--text-2);border-top:1px solid var(--line);flex:none;}
+
+  /* cover */
+  .cover{justify-content:space-between;}
+  .cover .top{display:flex;justify-content:space-between;align-items:baseline;flex:none;}
+  .cover .top .brand{display:flex;align-items:center;gap:1vw;}
+  .cover .top .brand img{height:clamp(22px,2vw,34px);width:auto;display:block;}
+  .cover .top .brand span{font-size:clamp(14px,1.1vw,21px);color:var(--text-3);font-weight:500;}
+  .cover .mid{flex:1;display:flex;flex-direction:column;justify-content:center;}
+  .cover .mid .eyebrow{font-family:var(--font-mono);font-size:clamp(13px,1.05vw,20px);font-weight:500;letter-spacing:.4em;text-transform:uppercase;color:var(--accent);margin-bottom:3vh;}
+  .cover .mid p{font-size:clamp(17px,1.55vw,30px);line-height:1.45;color:var(--text-2);max-width:75%;margin-top:3.4vh;}
+  .cover .bottomcards{display:flex;gap:1vw;flex:none;}
+  .cover .bc{background:var(--card);border-radius:12px;padding:1.8vh 1.6vw;}
+  .cover .bc .l{font-family:var(--font-mono);font-size:clamp(10px,0.78vw,15px);letter-spacing:.18em;text-transform:uppercase;color:var(--text-3);margin-bottom:0.8vh;}
+  .cover .bc .v{font-size:clamp(14px,1.15vw,22px);font-weight:600;}
+
+  /* nav */
+  #nav{position:fixed;right:1.4vw;bottom:2.2vh;display:flex;gap:8px;align-items:center;z-index:10;}
+  #nav button{background:var(--bg-pure);border:1px solid var(--line-2);color:var(--ink-2);border-radius:100px;width:42px;height:42px;font-size:19px;cursor:pointer;}
+  #nav button:hover{background:var(--card);}
+  #counter{position:fixed;left:1.4vw;bottom:2.8vh;color:var(--text-3);font-family:var(--font-mono);font-size:13px;z-index:10;font-variant-numeric:tabular-nums;letter-spacing:.1em;}
+</style>
+</head>
+<body>
+
+<!-- 1 · COVER -->
+<section class="slide cover active">
+  <div class="top">
+    <div class="brand"><img src="1337%20logo%20copy.png" alt="1337"><span>The intelligence company</span></div>
+    <div class="caps">Elektro Profi × 1337</div>
+  </div>
+  <div class="mid">
+    <div class="eyebrow">AI fejlesztési program</div>
+    <h1>Központi termékadatbázis<br>és <em>AI agentek</em></h1>
+    <p>A fejlesztési tervetek négy irányt jelöl ki: termékadatbázis, AI sales agent, AI beszerzési agent, logisztikai platform. Megmutatjuk, hogyan lesz ebből működő rendszer: fázisolva, mérhető eredményekkel, döntési ponttal minden fázis végén.</p>
+  </div>
+  <div class="bottomcards">
+    <div class="bc"><div class="l">Projekt</div><div class="v">Elektro Profi × 1337 Partners</div></div>
+    <div class="bc"><div class="l">Készült</div><div class="v">Mózes Noémi és az Elektro Profi csapata részére</div></div>
+    <div class="bc"><div class="l">Dátum</div><div class="v">2026. július</div></div>
+  </div>
+</section>
+
+<!-- 2 · KIK VAGYUNK -->
+<section class="slide">
+  <div class="shead"><div class="caps">01 · Kik vagyunk</div><img src="1337%20logo%20copy.png" alt="1337"></div>
+  <h2>Működő AI-rendszereket <em>építünk.</em></h2>
+  <p class="subtitle">1337 · The Intelligence Company. AI-stratégia és -implementáció pénzügyi és nagyvállalati csapatoknak. A csapatunk mérnökökből áll, akik veletek együtt építik fel a rendszert, és úgy adják át, hogy saját erőből tudjátok bővíteni.</p>
+  <div class="cards c3">
+    <div class="card">
+      <div class="mtag">Amit szállítunk</div>
+      <h3>Éles, napi használatban lévő rendszerek</h3>
+      <p>Az első hetektől kód készül, heti demóval, éles adaton. A kollégák kezében működő eszköz van, a vezetőség mérhető eredményt lát.</p>
+    </div>
+    <div class="card">
+      <div class="mtag">Ahogy dolgozunk</div>
+      <h3>A kollégáitokkal, a helyszínen</h3>
+      <p>Forward deployed engineering: a mérnök ott dolgozik, ahol a munka történik, és a valós vevői kérdésekre hangolja a rendszert.</p>
+    </div>
+    <div class="card">
+      <div class="mtag">Ahogy építjük</div>
+      <h3>Modell-agnosztikus architektúra</h3>
+      <p>Az AI-modellek cserélhetők, ahogy a piac fejlődik. A rendszer egyetlen szolgáltatóhoz sincs hozzáláncolva.</p>
+    </div>
+  </div>
+  <div class="refs">
+    <span class="caps">Akikkel dolgoztunk / dolgozunk</span>
+    <div class="names"><span>MBH</span><span>Euroleasing</span><span>Yettel</span><span>Portfolio Csoport</span><span>Dorsum</span><span>Finshape</span></div>
+  </div>
+</section>
+
+<!-- 3 · A HELYZET -->
+<section class="slide">
+  <div class="shead"><div class="caps">02 · A helyzet</div><img src="1337%20logo%20copy.png" alt="1337"></div>
+  <h2>A technológiai versenyt <em>ti nyerhetitek meg.</em></h2>
+  <p class="subtitle">Az Elektro Profi 35 éve épülő családi cég: 8 szaküzlet, stabil működés, erős márkaportfólió. A piacvezető többszörös méretű. A villamossági nagykereskedelemben ma még senki nem épített valódi AI-képességet Magyarországon.</p>
+  <div class="cards c3">
+    <div class="card">
+      <div class="mtag">A cég</div>
+      <div class="big">35 év</div>
+      <h3>Tudás a fejekben</h3>
+      <p>A legtapasztaltabb kollégák tudják, melyik megszakító mihez való, mi a kiegészítő, mi a helyettesítő. Ez a tudás ma nem skálázódik, és nyugdíjba is mehet.</p>
+    </div>
+    <div class="card">
+      <div class="mtag">A csatornák</div>
+      <div class="big">8+1</div>
+      <h3>Üzletek + webshop</h3>
+      <p>Az ajánlatadás kézi munka: katalógusok, PDF-ek, Vectory, fejben tartott kiegészítő-listák. Minden ajánlat újraindítja a kört.</p>
+    </div>
+    <div class="card accented">
+      <div class="mtag purple">Az ablak</div>
+      <div class="big">2026</div>
+      <h3>Első mozgó előny</h3>
+      <p>A szegmensben még nincs éles AI-adopció. Aki most épít adatbázist és agentet, 1-2 év előnyt szerez.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 4 · A TERVETEK -->
+<section class="slide">
+  <div class="shead"><div class="caps">03 · A tervetek</div><img src="1337%20logo%20copy.png" alt="1337"></div>
+  <h2>Négy irány. <em>Egy közös alap.</em></h2>
+  <p class="subtitle">A fejlesztési tervetek átgondolt és reális. A legfontosabb felismerés benne: a sales agent, a beszerzési agent és a belső chatfelület mind ugyanarra az alapra épül, a központi termékadatbázisra. Ezért ezzel kell kezdeni.</p>
+  <div class="cards c4">
+    <div class="card accented">
+      <div class="mtag purple">Fundamentum</div>
+      <h3>Központi termékadatbázis</h3>
+      <p>ETIM multi-verzió, BMEcat XML és gyártói PDF feldolgozás, webshop- és Vectory-kapcsolat. Saját erőből bővíthető.</p>
+    </div>
+    <div class="card">
+      <div class="mtag">Erre épül</div>
+      <h3>AI sales agent</h3>
+      <p>Ajánlat 2 perc alatt, kiegészítők, helyettesítők, BOQ-feldolgozás, 24/7 külső ügynök. A leggyorsabb ROI itt van.</p>
+    </div>
+    <div class="card">
+      <div class="mtag">Erre épül</div>
+      <h3>AI beszerzési agent</h3>
+      <p>Visszaigazolások ellenőrzése, nyitott rendelések követése, készletjavaslat, szállítói riportok a Vectory adataira építve.</p>
+    </div>
+    <div class="card">
+      <div class="mtag">Külön pálya</div>
+      <h3>Logisztikai platform</h3>
+      <p>Fuvartervezés és útvonal-optimalizálás: más jellegű probléma, más eszköztárral. Erre külön javaslatot teszünk.</p>
+    </div>
+  </div>
+  <div class="bottomnote">Adatbázis nélkül minden agent demó marad. Adatbázissal minden további fejlesztés hetek kérdése.</div>
+</section>
+
+<!-- 5 · A MEGKÖZELÍTÉS -->
+<section class="slide">
+  <div class="shead"><div class="caps">04 · A megközelítés</div><img src="1337%20logo%20copy.png" alt="1337"></div>
+  <h2>Fundamentum először. <em>Aztán az agentek.</em></h2>
+  <ul class="points">
+    <li><b>ETIM multi-verzió:</b> a gyártók eltérő ETIM-verziókat használnak (7–10). Az adatbázis verziók közti mappinget kezel, egy új verzió betöltése adminisztrációs feladat.</li>
+    <li><b>BMEcat + PDF feldolgozás:</b> a strukturált XML-katalógusok mellett a gyártói PDF-ekből is AI-alapú pipeline nyeri ki a termékadatokat, képi és táblázatos tartalomból is.</li>
+    <li><b>AI-kompatibilis struktúra:</b> paraméter-alapú lekérdezés, kompatibilitási és kiegészítő-relációk. Az adatbázis úgy épül, hogy egy agent hatékonyan keressen benne.</li>
+    <li><b>Saját erőből bővíthető:</b> új katalógus, új ETIM-kiadás, új PDF feltöltése a ti kollégáitok által, külső fejlesztő nélkül.</li>
+    <li><b>Vectory-integráció:</b> élő készlet és vevőspecifikus árak a Vector Kft. interfész-megoldására építve. A discovery első kérdése ez lesz.</li>
+  </ul>
+  <div class="darkcard">
+    <b>Az agent csak annyira jó, amennyire az adata.</b>
+    <span>A piacon sok a látványos AI-demó, ami éles adaton összeesik. Mi fordítva építünk: előbb a stabil adatréteg, aztán rá az agentek.</span>
+  </div>
+</section>
+
+<!-- 6 · AZ AI PLATFORM -->
+<section class="slide">
+  <div class="shead"><div class="caps">05 · Az AI platform</div><img src="1337%20logo%20copy.png" alt="1337"></div>
+  <h2>A négy irányotok <em>egy platformon</em> fut.</h2>
+  <div class="split">
+    <div class="left">
+      <p class="subtitle">A program végére saját AI platformotok lesz. A kollégáitok az első naptól chat-felületen dolgoznak, és minden bekötött forrásról kérdezhetnek.</p>
+      <ul class="points">
+        <li>A termékadatbázis az első bekötött forrás, az agentek a ráépülő alkalmazások.</li>
+        <li>Az értékesítő a pultnál kérdez, a rendszer a ti adatbázisotokból és a Vectoryból válaszol.</li>
+        <li>Az árazási és promóciós szabályokat csak a vezetőség látja és szerkeszti.</li>
+        <li>Az AI-költség felhasználónként, forintra követhető.</li>
+      </ul>
+    </div>
+    <div class="diagram">
+      <svg viewBox="0 0 1000 794" role="img" xmlns="http://www.w3.org/2000/svg" font-family="Inter,sans-serif">
+        <title>AI platform rétegarchitektúra</title>
+        <desc>Rétegek: AI platform, új termékadatbázis, rendszer-automatizációk, adatrendszerek, folyamatok, alapok.</desc>
+        <style>
+          .dg-container{fill:#F3F2EB;stroke:#DDDED7;stroke-width:1;}
+          .dg-bar{fill:#FFFFFF;stroke:#DDDED7;stroke-width:1;}
+          .dg-white{fill:#FFFFFF;stroke:#C7C8C1;stroke-width:1;}
+          .dg-acc{fill:#E8DEFD;stroke:#8B5CF6;stroke-width:1;}
+          .dg-new{fill:#E0D7FA;stroke:#6E2EE0;stroke-width:2;}
+          .dg-h{font-size:22px;font-weight:700;fill:#1A1A1A;}
+          .dg-hp{font-size:22px;font-weight:700;fill:#6E2EE0;}
+          .dg-t{font-size:19px;fill:#44403C;}
+          .dg-ta{font-size:19px;fill:#3b1d86;}
+          .dg-s{font-size:17px;fill:#78716C;}
+        </style>
+        <rect class="dg-container" x="10" y="10" width="980" height="168" rx="12"/>
+        <text class="dg-h" x="500" y="36" text-anchor="middle" dominant-baseline="central">AI platform</text>
+        <rect class="dg-acc" x="31" y="56" width="200" height="46" rx="9"/><text class="dg-ta" x="131" y="79" text-anchor="middle" dominant-baseline="central">Sales agent</text>
+        <rect class="dg-acc" x="257" y="56" width="220" height="46" rx="9"/><text class="dg-ta" x="367" y="79" text-anchor="middle" dominant-baseline="central">Webshop-agent</text>
+        <rect class="dg-acc" x="503" y="56" width="240" height="46" rx="9"/><text class="dg-ta" x="623" y="79" text-anchor="middle" dominant-baseline="central">Beszerzési agent</text>
+        <rect class="dg-acc" x="769" y="56" width="200" height="46" rx="9"/><text class="dg-ta" x="869" y="79" text-anchor="middle" dominant-baseline="central">Tenderradar</text>
+        <rect class="dg-acc" x="61" y="116" width="210" height="46" rx="9"/><text class="dg-ta" x="166" y="139" text-anchor="middle" dominant-baseline="central">Chat-felület</text>
+        <rect class="dg-acc" x="297" y="116" width="210" height="46" rx="9"/><text class="dg-ta" x="402" y="139" text-anchor="middle" dominant-baseline="central">Konnektorok</text>
+        <rect class="dg-acc" x="533" y="116" width="220" height="46" rx="9"/><text class="dg-ta" x="643" y="139" text-anchor="middle" dominant-baseline="central">Jogosultságok</text>
+        <rect class="dg-acc" x="779" y="116" width="160" height="46" rx="9"/><text class="dg-ta" x="859" y="139" text-anchor="middle" dominant-baseline="central">Audit</text>
+
+        <rect class="dg-new" x="10" y="204" width="980" height="108" rx="12"/>
+        <text class="dg-hp" x="500" y="230" text-anchor="middle" dominant-baseline="central">Központi termékadatbázis · új réteg</text>
+        <rect class="dg-white" x="46" y="250" width="160" height="46" rx="9"/><text class="dg-ta" x="126" y="273" text-anchor="middle" dominant-baseline="central">ETIM 7–10</text>
+        <rect class="dg-white" x="232" y="250" width="200" height="46" rx="9"/><text class="dg-ta" x="332" y="273" text-anchor="middle" dominant-baseline="central">BMEcat + PDF</text>
+        <rect class="dg-white" x="458" y="250" width="230" height="46" rx="9"/><text class="dg-ta" x="573" y="273" text-anchor="middle" dominant-baseline="central">Lineage + review</text>
+        <rect class="dg-white" x="714" y="250" width="240" height="46" rx="9"/><text class="dg-ta" x="834" y="273" text-anchor="middle" dominant-baseline="central">Kereső + relációk</text>
+
+        <rect class="dg-bar" x="10" y="338" width="980" height="76" rx="12"/>
+        <text class="dg-h" x="500" y="364" text-anchor="middle" dominant-baseline="central">Rendszer-automatizációk</text>
+        <text class="dg-s" x="500" y="392" text-anchor="middle" dominant-baseline="central">Vectory-szinkron · éjszakai jobok · riportok</text>
+
+        <rect class="dg-container" x="10" y="440" width="980" height="108" rx="12"/>
+        <text class="dg-h" x="500" y="466" text-anchor="middle" dominant-baseline="central">Adatrendszerek</text>
+        <rect class="dg-white" x="53" y="486" width="170" height="46" rx="9"/><text class="dg-t" x="138" y="509" text-anchor="middle" dominant-baseline="central">Vectory ERP</text>
+        <rect class="dg-white" x="249" y="486" width="140" height="46" rx="9"/><text class="dg-t" x="319" y="509" text-anchor="middle" dominant-baseline="central">Webshop</text>
+        <rect class="dg-white" x="415" y="486" width="120" height="46" rx="9"/><text class="dg-t" x="475" y="509" text-anchor="middle" dominant-baseline="central">E-mail</text>
+        <rect class="dg-white" x="561" y="486" width="200" height="46" rx="9"/><text class="dg-t" x="661" y="509" text-anchor="middle" dominant-baseline="central">Gyártói adatok</text>
+        <rect class="dg-white" x="787" y="486" width="160" height="46" rx="9"/><text class="dg-t" x="867" y="509" text-anchor="middle" dominant-baseline="central">Logisztika</text>
+
+        <rect class="dg-bar" x="10" y="574" width="980" height="76" rx="12"/>
+        <text class="dg-h" x="500" y="600" text-anchor="middle" dominant-baseline="central">Folyamatok</text>
+        <text class="dg-s" x="500" y="628" text-anchor="middle" dominant-baseline="central">ajánlatadás · tender · beszerzés · készletezés</text>
+
+        <rect class="dg-container" x="10" y="676" width="980" height="108" rx="12"/>
+        <text class="dg-h" x="500" y="702" text-anchor="middle" dominant-baseline="central">Alapok</text>
+        <rect class="dg-white" x="30" y="722" width="200" height="46" rx="9"/><text class="dg-t" x="130" y="745" text-anchor="middle" dominant-baseline="central">Business strategy</text>
+        <rect class="dg-white" x="250" y="722" width="170" height="46" rx="9"/><text class="dg-t" x="335" y="745" text-anchor="middle" dominant-baseline="central">Data strategy</text>
+        <rect class="dg-white" x="440" y="722" width="150" height="46" rx="9"/><text class="dg-t" x="515" y="745" text-anchor="middle" dominant-baseline="central">Governance</text>
+        <rect class="dg-white" x="610" y="722" width="110" height="46" rx="9"/><text class="dg-t" x="665" y="745" text-anchor="middle" dominant-baseline="central">Policy</text>
+        <rect class="dg-white" x="740" y="722" width="80" height="46" rx="9"/><text class="dg-t" x="780" y="745" text-anchor="middle" dominant-baseline="central">HR</text>
+        <rect class="dg-white" x="840" y="722" width="130" height="46" rx="9"/><text class="dg-t" x="905" y="745" text-anchor="middle" dominant-baseline="central">Termékek</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- 7 · KÉSZ ÉPÍTŐELEMEK -->
+<section class="slide">
+  <div class="shead"><div class="caps">06 · Kész építőelemek</div><img src="1337%20logo%20copy.png" alt="1337"></div>
+  <h2>A platform kész. <em>A ti két elemeteket</em> építjük.</h2>
+  <p class="subtitle">A platform-stackünk több ügyfélnél fut éles használatban. Az Elektro Profi programban két elem épül újonnan, kifejezetten rátok szabva. A feldolgozó pipeline-t a discovery során az átadott adatmintáitokon validáljuk.</p>
+  <div class="cards c3">
+    <div class="card">
+      <div class="mtag">Kész</div>
+      <h3>Platform-alap</h3>
+      <p>Chat-felület, jogosultságkezelés, auditnaplózás, dokumentum-feldolgozás, költségkövetés. Éles használatban bizonyított építőelemek.</p>
+    </div>
+    <div class="card accented">
+      <div class="mtag purple">Újonnan épül</div>
+      <h3>ETIM-termékadatmodell</h3>
+      <p>A gyártóitok katalógusaira szabva: BMEcat XML és PDF feldolgozás, ETIM 7–10 verziókezeléssel, kiegészítő- és helyettesítő-relációkkal.</p>
+    </div>
+    <div class="card accented">
+      <div class="mtag purple">Újonnan épül</div>
+      <h3>Vectory-integráció</h3>
+      <p>Élő készlet és vevőspecifikus árak a Vectoryból. A pontos interfészt a Vector Kft-vel közösen tisztázzuk a discovery elején.</p>
+    </div>
+  </div>
+  <div class="bottomnote">Ezért indul gyorsan a program: a fejlesztési munka oda koncentrálódik, ami nálatok egyedi.</div>
+</section>
+
+<!-- 8 · A PROGRAM -->
+<section class="slide">
+  <div class="shead"><div class="caps">07 · A program</div><img src="1337%20logo%20copy.png" alt="1337"></div>
+  <h2>Hat lépés, mindegyik végén <em>ti döntötök.</em></h2>
+  <table class="plan">
+    <tr><th>Fázis</th><th>Mit kaptok</th><th>Idő</th></tr>
+    <tr>
+      <td class="ph">0 · Discovery</td>
+      <td class="desc">Vectory-egyeztetés a Vector Kft-vel, adat-audit a ti mintáitokon, baseline-mérés (ajánlatadási átfutás, kosárérték). Kimenet: fix ár az 1. fázisra.</td>
+      <td class="time">3–4 hét</td>
+    </tr>
+    <tr>
+      <td class="ph">P · Platform-modul</td>
+      <td class="desc">Chat-felület a kollégáknak a napi munkához. A discovery után indul, az adatplatform építésével párhuzamosan.</td>
+      <td class="time">2–3 hét</td>
+    </tr>
+    <tr>
+      <td class="ph">1 · Adatplatform</td>
+      <td class="desc">Termékadatbázis a gyártói katalógusokból (ETIM 7–10, BMEcat, PDF), Vectory-szinkron, önkiszolgáló feltöltés, kereső és összehasonlító felület.</td>
+      <td class="time">2–2,5 hó</td>
+    </tr>
+    <tr>
+      <td class="ph">2 · Sales agent</td>
+      <td class="desc">Ajánlat 2 perc alatt, kiegészítő- és helyettesítő-ajánlás, fedezet-ellenőrzés, ajánlatgenerálás.</td>
+      <td class="time">1,5–2 hó</td>
+    </tr>
+    <tr>
+      <td class="ph">3 · Tender és webshop</td>
+      <td class="desc">BOQ-feldolgozás, tenderradar, 24/7 webshop-ügynök, promóciós motor.</td>
+      <td class="time">2–3 hó</td>
+    </tr>
+    <tr>
+      <td class="ph">4 · Beszerzési agent</td>
+      <td class="desc">Visszaigazolás-ellenőrzés, nyitott rendelések követése, min-max készletjavaslat, szállítói riportok.</td>
+      <td class="time">2–3 hó</td>
+    </tr>
+  </table>
+  <div class="tablefoot">Minden fázis elfogadása a discovery baseline-jához mérve. Párhuzamosan AI-képzés a vezetőségnek és a kulcsembereknek.</div>
+</section>
+
+<!-- 9 · SALES AGENT KÉPESSÉGEK -->
+<section class="slide">
+  <div class="shead"><div class="caps">08 · A 2. fázis eredménye</div><img src="1337%20logo%20copy.png" alt="1337"></div>
+  <h2>Amit a kollégák <em>naponta használnak.</em></h2>
+  <div class="grid6">
+    <div class="g6"><div class="num">01</div><h3>Ajánlat 2 perc alatt</h3><p>A kolléga bemásolja a vevői kérést, az agent teljes anyaglistát ad SKU-kkal, mennyiségekkel, vevőspecifikus árakkal.</p></div>
+    <div class="g6"><div class="num">02</div><h3>Kiegészítők automatikusan</h3><p>Kábelcsatornához végzáró, toldó, sarokelem. Az agent felismeri, mi hiányzik, és a saját portfólióból ajánl.</p></div>
+    <div class="g6"><div class="num">03</div><h3>Helyettesítő-keresés</h3><p>Ha nincs raktáron, azonnal mutatja a legközelebbi egyenértékűt más márkából, a fedezeti különbséggel együtt.</p></div>
+    <div class="g6"><div class="num">04</div><h3>Műszaki kérdések</h3><p>"Milyen megszakító kell egy 22 kW-os háromfázisú motorhoz?" Hivatkozott válasz az ETIM-paraméterekre építve.</p></div>
+    <div class="g6"><div class="num">05</div><h3>Élő készlet és ár</h3><p>Vectory-kapcsolattal: melyik telephelyen van, mikorra érhet oda, mi a vevőspecifikus ár.</p></div>
+    <div class="g6"><div class="num">06</div><h3>Új kolléga betanítás</h3><p>A 35 év tudása kereshetővé válik. Az új kolléga az első héttől helyesen válaszol.</p></div>
+  </div>
+</section>
+
+<!-- 10 · LOGISZTIKA -->
+<section class="slide">
+  <div class="shead"><div class="caps">09 · Logisztikai platform</div><img src="1337%20logo%20copy.png" alt="1337"></div>
+  <h2>Logisztika: <em>kész platformot</em> érdemes venni.</h2>
+  <p class="subtitle">A fuvartervezés és útvonal-optimalizálás megoldott probléma, érett platformok léteznek rá. Egyedi rendszert ott érdemes építeni, ahol versenyelőnyt ad. A ti versenyelőnyötök a termék- és szakmai tudás.</p>
+  <div class="twocol">
+    <div class="col-box yes">
+      <h3>Amit javasolunk</h3>
+      <ul>
+        <li>A discovery részeként felmérjük a fuvarszervezési folyamatot és a valós igényt</li>
+        <li>Piaci körkép: kész fuvartervező platformok értékelése a ti kritériumaitok szerint</li>
+        <li>Integrációs terv: a kiválasztott eszköz összekötése a Vectoryval és az adatbázissal</li>
+        <li>Build vs. buy döntési anyag számokkal. Ti döntötök.</li>
+      </ul>
+    </div>
+    <div class="col-box no">
+      <h3>Amit nem javasolunk</h3>
+      <ul>
+        <li>Egyedi útvonal-optimalizáló fejlesztése nulláról: tízmilliós felár egy megoldott problémára</li>
+        <li>A logisztika összekötése az AI-program kritikus útvonalával. Külön pályán gyorsabb.</li>
+        <li>Döntés felmérés nélkül. Előbb a folyamat és a számok.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 11 · NAGYSÁGRENDEK -->
+<section class="slide">
+  <div class="shead"><div class="caps">10 · Nagyságrendek</div><img src="1337%20logo%20copy.png" alt="1337"></div>
+  <h2>Sávok fázisonként. <em>Fix ár a discovery után.</em></h2>
+  <table class="plan">
+    <tr><th>Tétel</th><th>Tartalom</th><th>Sáv (nettó)</th></tr>
+    <tr><td class="ph">0 · Discovery</td><td class="desc">Vectory-interfészek, adat-audit, architektúra, baseline. Kimenete a fix árajánlat.</td><td class="price">3–5 M Ft</td></tr>
+    <tr><td class="ph">P · Platform-modul</td><td class="desc">Chat-felület a csapatnak, az adatplatformmal párhuzamosan.</td><td class="price">3–5 M Ft</td></tr>
+    <tr><td class="ph">1 · Adatplatform</td><td class="desc">Termékadatbázis, betöltő pipeline, Vectory-szinkron, kereső.</td><td class="price">12–16 M Ft</td></tr>
+    <tr><td class="ph">2 · Sales agent</td><td class="desc">Ajánlat 2 perc alatt, kiegészítők, helyettesítők, fedezet-ellenőrzés.</td><td class="price">8–12 M Ft</td></tr>
+    <tr><td class="ph">3 · Tender és webshop</td><td class="desc">BOQ-feldolgozás, tenderradar, 24/7 webshop-ügynök, promóciós motor.</td><td class="price">10–15 M Ft</td></tr>
+    <tr><td class="ph">4 · Beszerzési agent</td><td class="desc">Visszaigazolások, nyitott rendelések, készletjavaslat, riportok.</td><td class="price">8–12 M Ft</td></tr>
+    <tr><td class="ph">Üzemeltetés</td><td class="desc">Go-live-tól: infra-felügyelet, modellfrissítés, support.</td><td class="price">0,5–1 M Ft/hó</td></tr>
+  </table>
+  <div class="tablefoot">Teljes program indikatívan 41–60 M Ft + áfa, 9–12 hónap. A kitettség sosem nagyobb egy fázisnál. Az LLM- és infrastruktúra-költség átlátható pass-through. Az 1. fázis ára feltételezi, hogy a Vectory-interfész a discoveryben validált módon elérhető. A logisztikai platform a build-vs-buy döntés után külön tétel.</div>
+</section>
+
+<!-- 12 · HOGYAN DOLGOZUNK -->
+<section class="slide">
+  <div class="shead"><div class="caps">11 · Hogyan dolgozunk</div><img src="1337%20logo%20copy.png" alt="1337"></div>
+  <h2>Beépülünk, megépítjük, <em>átadjuk.</em></h2>
+  <div class="cards c3">
+    <div class="card">
+      <div class="mtag">Builder csapat</div>
+      <h3>Az első hetektől kód készül</h3>
+      <p>Heti demó: mindig látjátok, hol tart a rendszer, és éles adaton nézzük. A negyedik use case már heteken belül élesedik.</p>
+    </div>
+    <div class="card">
+      <div class="mtag">Közös építés</div>
+      <h3>A kollégák az első naptól benne vannak</h3>
+      <p>Az értékesítők mondják meg, mitől jó egy ajánlat, mi ezt fordítjuk rendszerré. Így lesz belőle eszköz, amit használnak.</p>
+    </div>
+    <div class="card">
+      <div class="mtag">Betanítás</div>
+      <h3>Saját erőből bővíthető rendszer</h3>
+      <p>Dokumentáció és betanítás az átadás része. Az adatbázist a ti kollégáitok bővítik, új katalógust ők töltenek fel.</p>
+    </div>
+  </div>
+  <div class="bottomnote">Modell-agnosztikus architektúra: az AI-modellek cserélhetők, ahogy a piac fejlődik. Magyar senior csapat, magyar nyelvű rendszer az első naptól.</div>
+</section>
+
+<!-- 13 · CSAPAT -->
+<section class="slide">
+  <div class="shead"><div class="caps">12 · Kikkel dolgoztok</div><img src="1337%20logo%20copy.png" alt="1337"></div>
+  <h2><em>Senior csapat</em> viszi a programot.</h2>
+  <div class="team">
+    <div class="member">
+      <img src="Screenshot%202026-01-06%20at%2023.34.47%20copy.png" alt="Pereczes János">
+      <div class="info">
+        <h3>Pereczes János</h3>
+        <div class="role">CEO · programfelelős</div>
+        <p>Az MBH (ex-MKB) bank digitalizációját vezette, az MKB Fintechlab alapítója. A programot személyesen viszi.</p>
+      </div>
+    </div>
+    <div class="member">
+      <img src="Molnar_Adam%20copy.png" alt="Molnár Ádám">
+      <div class="info">
+        <h3>Molnár Ádám</h3>
+        <div class="role">CTO · architektúra</div>
+        <p>Senior engineering leader. Az adatbázis-architektúra és az agent-réteg műszaki felelőse.</p>
+      </div>
+    </div>
+    <div class="member">
+      <img src="Screenshot%202026-01-06%20at%2023.35.42%20copy.png" alt="Szilágyi Benedek">
+      <div class="info">
+        <h3>Szilágyi Benedek</h3>
+        <div class="role">Delivery lead</div>
+        <p>Forward deployed engineering: a helyszínen, a kollégákkal együtt építi és hangolja a rendszert.</p>
+      </div>
+    </div>
+    <div class="member">
+      <img src="Screenshot%202026-01-06%20at%2023.35.26%20copy.png" alt="Kószó Kamill">
+      <div class="info">
+        <h3>Kószó Kamill</h3>
+        <div class="role">Módszertan · adopció</div>
+        <p>Azért felel, hogy a rendszert a kollégák tényleg használják: bevezetés, betanítás, munkafolyamat-illesztés.</p>
+      </div>
+    </div>
+  </div>
+  <div class="bottomnote">A fejlesztést dedikált mérnökcsapat viszi, a fenti négyes a program vezetése.</div>
+</section>
+
+<!-- 14 · KÖVETKEZŐ LÉPÉS -->
+<section class="slide">
+  <div class="shead"><div class="caps">13 · Következő lépés</div><img src="1337%20logo%20copy.png" alt="1337"></div>
+  <h2>Kezdjük <em>az alappal.</em></h2>
+  <p class="subtitle">Ha az irány jó, három lépés választ el a discovery indításától.</p>
+  <div class="steps">
+    <div class="step">
+      <div class="n">01</div>
+      <h3>Adatminták átadása</h3>
+      <p>ETIM-kézikönyvek, BMEcat XML-minták, 2-3 gyártói PDF-katalógus. Ezeken validáljuk a feldolgozó pipeline-t.</p>
+    </div>
+    <div class="step">
+      <div class="n">02</div>
+      <h3>Vectory-egyeztetés</h3>
+      <p>Közös hívás a Vector Kft-vel: milyen interfészek élnek ma, mit enged az API. Ezt tisztázzuk először.</p>
+    </div>
+    <div class="step">
+      <div class="n">03</div>
+      <h3>Discovery indítás</h3>
+      <p>A minták és a Vectory-kép birtokában 1-2 héten belül indul. Javasolt indulás: 2026. augusztus.</p>
+    </div>
+  </div>
+  <div class="bottomnote">A discovery végén fix árajánlatot kaptok az 1. fázisra, és a saját adataitokon látjátok, hogyan működik a feldolgozás. Kapcsolat: janos@1337.partners · Ajánlat: 2026. július · Érvényesség: 30 nap · Az árak indikatív sávok, a fix ár a discovery kimenete.</div>
+</section>
+
+<div id="counter">1 / 14</div>
+<div id="nav">
+  <button id="prev" aria-label="Előző">‹</button>
+  <button id="next" aria-label="Következő">›</button>
+</div>
+
+<script>
+(function(){
+  var slides=document.querySelectorAll('.slide');
+  var i=0;
+  var counter=document.getElementById('counter');
+  function show(n){
+    if(n<0)n=0;
+    if(n>slides.length-1)n=slides.length-1;
+    slides[i].classList.remove('active');
+    i=n;
+    slides[i].classList.add('active');
+    counter.textContent=(i+1)+' / '+slides.length;
+    location.hash=i+1;
+  }
+  document.addEventListener('keydown',function(e){
+    if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' ')show(i+1);
+    if(e.key==='ArrowLeft'||e.key==='PageUp')show(i-1);
+    if(e.key==='Home')show(0);
+    if(e.key==='End')show(slides.length-1);
+  });
+  document.getElementById('next').addEventListener('click',function(){show(i+1);});
+  document.getElementById('prev').addEventListener('click',function(){show(i-1);});
+  var h=parseInt(location.hash.replace('#',''),10);
+  if(h>=1&&h<=slides.length){slides[0].classList.remove('active');i=h-1;slides[i].classList.add('active');counter.textContent=(i+1)+' / '+slides.length;}
+})();
+</script>
+</body>
+</html>
